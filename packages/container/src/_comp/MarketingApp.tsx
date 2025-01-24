@@ -1,14 +1,15 @@
 import React, { useRef, useEffect } from "react";
-import mount from "marketingApp/marketingIndex";
+import MarketingMount from "marketingApp/marketingIndex";
+console.log("MarketingMount:", MarketingMount);
 
 const MarketingApp = () => {
   const ref = useRef(null);
 
   useEffect(() => {
     if (ref.current) {
-      mount(ref.current);
+      MarketingMount(ref.current);
     }
-  }, []);
+  }, [ref]);
 
   return <div ref={ref}></div>;
 };

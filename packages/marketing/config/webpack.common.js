@@ -1,17 +1,26 @@
 const path = require("path");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/index.tsx", // Entry point (can be .js, .ts, or .mjs)
+  entry: "./src/index.tsx",
+  devtool: "inline-source-map",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/",
+    publicPath: "http://localhost:8081/", // Public path for assets
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".jsx", ".cjs", ".mjs"], // Resolve these file extensions
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx|mjs)$/, // Match .js, .jsx, .ts, .tsx, and .mjs files
+        test: /\.(js|jsx|ts|tsx|cjs|mjs)$/, // Match .js, .jsx, .ts, .cjs., .tsx, and .mjs files
+        type: "javascript/auto",
+        resolve: {
+          fullySpecified: false,
+        },
         exclude: /node_modules/,
         use: {
           loader: "babel-loader", // Use Babel for JavaScript and TypeScript
@@ -40,11 +49,9 @@ module.exports = {
     ],
   },
   plugins: [
+    new ForkTsCheckerWebpackPlugin(), // Add TypeScript type checking
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
   ],
-  resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx", ".mjs"], // Add all supported extensions
-  },
 };

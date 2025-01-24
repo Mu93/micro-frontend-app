@@ -1,61 +1,57 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const packageJson = require("../package.json");
-const { ModuleFederationPlugin } = require("webpack").container;
+const path = require("path");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  // entry: "./src/index.tsx", // Entry point (can be .js, .ts, or .mjs)
+  devtool: "inline-source-map",
   output: {
-    filename: "bundle.js", // اسم ملف الإخراج
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+    publicPath: "http://localhost:8080/", // Public path for assets
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js", "jsx", "cjs"], // دعم امتدادات الملفات
+    extensions: [".tsx", ".ts", ".js", ".jsx", ".cjs", ".mjs"], // Resolve these file extensions
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx|cjs\.js)$/, // معالجة ملفات TypeScript وJavaScript
-        exclude: /node_modules/,
+        test: /\.(js|jsx|ts|tsx|cjs|mjs)$/, // Match .js, .jsx, .ts, .cjs., .tsx, and .mjs files
         type: "javascript/auto",
         resolve: {
           fullySpecified: false,
         },
+        exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: "babel-loader", // Use Babel for JavaScript and TypeScript
           options: {
             presets: [
-              "@babel/preset-react", // دعم React JSX
-              "@babel/preset-env", // دعم JavaScript الحديث
+              "@babel/preset-env", // For JavaScript
+              "@babel/preset-react", // For React
+              "@babel/preset-typescript", // For TypeScript
             ],
-            plugins: [
-              "@babel/plugin-transform-runtime", // دعم async/await
-            ],
+            plugins: ["@babel/plugin-transform-runtime"], // For TypeScript
           },
         },
       },
       {
         test: /\.css$/,
         use: [
-          // 'style-loader', // يحقن CSS في DOM (مفيد لبيئة التطوير)
-          // 'css-loader',   // يحول CSS إلى JavaScript
+          "style-loader", // يحقن CSS في DOM (مفيد لبيئة التطوير)
+          "css-loader", // يحول CSS إلى JavaScript
           "postcss-loader", // يعالج CSS باستخدام PostCSS (مطلوب لـ Tailwind CSS)
         ],
       },
       {
-        test: /\.m?js/, // معالجة ملفات JavaScript النمطية (ES Modules)
-        type: "javascript/auto",
-        resolve: {
-          fullySpecified: false,
-        },
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(), // Add TypeScript type checking
-    new ModuleFederationPlugin({
-      shared: packageJson.dependencies, // مشاركة التبعيات
-    }),
     new HtmlWebpackPlugin({
-      template: "./public/index.html", // قالب HTML
+      template: "./public/index.html",
     }),
   ],
 };
