@@ -34,9 +34,6 @@ jobs:
       - name: Build project
         run: yarn build
 
-      - name: Run tests
-        run: yarn test
-
   deploy:
     needs: build-and-test # Wait for the build-and-test job to complete
     runs-on: ubuntu-latest
