@@ -10,7 +10,7 @@ on:
     branches:
       - main # Trigger the workflow on pull requests to the main branch
 
-default:
+defaults:
   run:
     working-directory: packages/container
 
@@ -19,7 +19,6 @@ jobs:
     runs-on: ubuntu-latest # Use the latest Ubuntu environment
 
     steps:
-    
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -44,16 +43,16 @@ jobs:
     if: github.ref == 'refs/heads/main' # Only run this job on the main branch
 
     steps:
-      - name: Checkout code 
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js 
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: "yarn"
 
-      - name: Install dependencies  
+      - name: Install dependencies
         run: yarn install
 
       - name: Build project
